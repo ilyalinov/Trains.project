@@ -18,10 +18,10 @@ class TrainsGraphTest {
     @BeforeEach
     void setUp() throws IOException {
         projDir = Paths.get("").toAbsolutePath().toString();
-        String[] configPaths = {"src\\main\\resources\\noTrains.txt",
-                "src\\main\\resources\\singleTrain.txt",
-                "src\\main\\resources\\trains.txt",
-                "src\\main\\resources\\trains1.txt"
+        String[] configPaths = {"/src/main/resources/noTrains.txt",
+                "src/main/resources/singleTrain.txt",
+                "src/main/resources/trains.txt",
+                "src/main/resources/trains1.txt"
         };
         initialize(configPaths);
     }

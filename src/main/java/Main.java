@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 public class Main {
     public static void main(String[] args) throws IOException {
         String projDir = Paths.get("").toAbsolutePath().toString();
-        Path path1 = Paths.get(projDir, "src\\main\\resources\\trains1.txt");
+        Path path1 = Paths.get(projDir, "/src/main/resources/trains1.txt");
         TrainsInfo info1 = TrainsInfoReader.readFile(path1);
         TrainsGraph graph1 = new TrainsGraph(info1);
 
