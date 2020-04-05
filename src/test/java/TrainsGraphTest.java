@@ -15,6 +15,7 @@ class TrainsGraphTest {
     List<TrainsInfo> info;
     List<TrainsGraph> graph;
     Path[] path;
+
     @BeforeEach
     void setUp() throws IOException {
         projDir = Paths.get("").toAbsolutePath().toString();

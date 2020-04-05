@@ -1,21 +1,21 @@
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TrainsGraph {
-    GraphState state;
+    private GraphState state;
 
     public TrainsGraph(TrainsInfo info) {
-        // 2 additional vertices() represent start and finish.
-        // We search the shortest way between these.
         state = new GraphState(info);
-
         createEdges();
-        findShortestWay();
+
+        List<Integer> orderedVertices = topSort();
+        findShortestWay(orderedVertices);
     }
 
     public int getMaxEarnings() {
-        return 0 - state.pathLength.get(state.finishVertice());
+        return state.pathLength.get(state.finishVertice());
     }
 
     public List<Integer> trainsToUnloadForMaxEarnings() {
@@ -27,6 +27,44 @@ public class TrainsGraph {
         }
 
         return trainsToUnload;
+    }
+
+    private void findShortestWay(List<Integer> orderedVertices) {
+        for (int v : orderedVertices) {
+            for (int u : state.edges.get(v)) {
+                int temp = state.pathLength.get(v) + state.info().price.get(u);
+                if (temp > state.pathLength.get(u)) {
+                    setParent(v, u);
+                    state.pathLength.set(u, temp);
+                }
+
+                if (temp == state.pathLength.get(u)) {
+                    if (state.info().minsToProccess.get(state.parent.get(u)) > state.info().minsToProccess.get(v)) {
+                        setParent(v, u);
+                        state.pathLength.set(u, temp);
+                    }
+                }
+            }
+        }
+    }
+
+    private List<Integer> topSort() {
+        List<Boolean> used = new ArrayList<>(Collections.nCopies(state.numberOfVertices(), false));
+        List<Integer> orderedVertices = new ArrayList<>();
+        depthSearch(state.startVertice(), used, orderedVertices);
+
+        return orderedVertices;
+    }
+
+    private void depthSearch(int v, List<Boolean> used, List<Integer> orderedVertices) {
+        used.set(v, true);
+        for (int u : state.edges.get(v)) {
+            if (!used.get(u)) {
+                depthSearch(u, used, orderedVertices);
+            }
+        }
+
+        orderedVertices.add(0, v);
     }
 
     private void createEdges() {
@@ -55,35 +93,7 @@ public class TrainsGraph {
         }
     }
 
-    private void findShortestWay() {
-        for (int i = 0; i < state.numberOfVertices() - 1; i++) {
-            for (int u : state.vertices()) {
-                for (int v : state.edges.get(u)) {
-                    relaxEdge(u, v);
-                }
-            }
-        }
-    }
-
-    private void relaxEdge(int s, int f) {
-        if (state.pathLength.get(s) != Integer.MAX_VALUE && state.pathLength.get(s) + weight(s) < state.pathLength.get(f)) {
-            state.pathLength.set(f, state.pathLength.get(s) + weight(s));
-            setParent(s, f);
-        }
-
-        if (state.pathLength.get(s) != Integer.MAX_VALUE && state.pathLength.get(s) + weight(s) == state.pathLength.get(f)) {
-            if (state.info().minsToProccess.get(s) < state.info().minsToProccess.get(state.parent.get(f))) {
-                state.pathLength.set(f, state.pathLength.get(s) + weight(s));
-                setParent(s, f);
-            }
-        }
-    }
-
     private void setParent(int s, int f) {
         state.parent.set(f, s);
-    }
-
-    private int weight(int s) {
-        return 0 - state.info().price.get(s);
     }
 }

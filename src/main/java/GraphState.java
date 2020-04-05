@@ -24,7 +24,7 @@ public class GraphState {
         finishVertice = numberOfVertices - 1;
         this.info = info.copy();
         addStartAndFinish();
-        pathLength = new ArrayList<>(Collections.nCopies(numberOfVertices, Integer.MAX_VALUE));
+        pathLength = new ArrayList<>(Collections.nCopies(numberOfVertices, Integer.MIN_VALUE));
         pathLength.set(startVertice, 0);
         parent = new ArrayList<>(Collections.nCopies(numberOfVertices, -1));
         vertices = IntStream.rangeClosed(startVertice, finishVertice).boxed().collect(Collectors.toList());
